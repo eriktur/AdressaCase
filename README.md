@@ -1,6 +1,6 @@
 # Card Management App
 
-This is a simple Vue 3 web application that allows users to manage their payment cards. The application is built with accessibility (WCAG) in mind and provides a clean user interface to add, view, select, and delete payment methods.
+This is a simple Vue 3 web application that allows users to manage their payment cards.
 
 ## Features
 

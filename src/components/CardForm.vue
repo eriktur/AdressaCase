@@ -1,27 +1,49 @@
 <template>
-  <form @submit.prevent="submitForm" class="card-form news">
-    <h2>Legg til nytt kort</h2>
+  <form @submit.prevent="submitForm" class="card-form">
+  <h2>Legg til nytt kort</h2>
+
     <div>
-      <label for="cardDetails">Kortnummer</label>
-      <input id="cardDetails" v-model="form.cardDetails" type="text" required maxlength="16" />
+      <input
+          id="cardDetails"
+          v-model="form.cardDetails"
+          type="text"
+          required
+          title="Kortnummer må være 16 siffer"
+          placeholder="Kortnummer (16 siffer)"
+      />
     </div>
+
     <div>
-      <label for="expiryDate">Utløpsdato (MM/ÅÅ)</label>
-      <input id="expiryDate" v-model="form.expiryDate" type="text" required placeholder="MM/ÅÅ" />
+      <input
+          id="expiryDate"
+          v-model="form.expiryDate"
+          type="text"
+          required
+          title="Skriv inn gyldig dato på formatet MM/ÅÅ"
+          placeholder="Utløpsdato (MM/ÅÅ)"
+      />
     </div>
+
     <div>
-      <label for="CVV">CVV</label>
-      <input id="CVV" v-model="form.CVV" type="password" required maxlength="3" />
+      <input
+          id="CVV"
+          v-model="form.CVV"
+          type="password"
+          required
+          title="CVV må være 3 siffer"
+          placeholder="CVV (3 siffer)"
+      />
     </div>
+
     <div>
-      <label for="issuer">Korttype</label>
       <select id="issuer" v-model="form.issuer" required>
-        <option disabled value="">Velg</option>
+        <option disabled value="">Velg kort</option>
         <option>VISA</option>
         <option>MASTERCARD</option>
         <option>AMEX</option>
       </select>
     </div>
+
     <div class="form-buttons">
       <button type="submit">Lagre</button>
       <button type="button" @click="$emit('cancel')">Avbryt</button>
@@ -29,17 +51,23 @@
   </form>
 </template>
 
+
 <script setup>
 import { reactive } from 'vue'
-import axios from 'axios'
+import { addCard } from '../services/cardService'
 
 const emit = defineEmits(['saved', 'cancel'])
-const form = reactive({ currency: 'NOK', cardDetails: '', expiryDate: '', CVV: '', issuer: '' })
-const baseUrl = import.meta.env.VITE_API_BASE_URL
+const form = reactive({
+  currency: 'NOK',
+  cardDetails: '',
+  expiryDate: '',
+  CVV: '',
+  issuer: ''
+})
 
 async function submitForm() {
   try {
-    await axios.post(`${baseUrl}/updatePayMethodDetails`, form)
+    await addCard(form)
     emit('saved')
   } catch (err) {
     console.error('Kunne ikke lagre kort:', err)
@@ -47,19 +75,73 @@ async function submitForm() {
 }
 </script>
 
+
+
 <style scoped>
-.news {
-  column-count: 2;
-  column-gap: 1rem;
-}
 .card-form {
-  max-width: 600px;
-  margin: 1rem auto;
-  display: grid;
-  gap: 0.75rem;
+  min-width: 400px;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fefefe;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-sizing: border-box;
 }
-label { display: block; margin-bottom: 0.25rem; }
-input, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
-.form-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; }
-button { padding: 0.5rem 1rem; cursor: pointer; }
+
+.card-form h2 {
+  margin-bottom: 1rem;
+  color: #1e1e2f;
+}
+
+.card-form label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.card-form input,
+.card-form select {
+  width: 80%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #ffffff;
+  color: #000000;
+  transition: border-color 0.2s;
+}
+
+
+.card-form input:focus,
+.card-form select:focus {
+  border-color: #3a3a3a;
+  outline: none;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.form-buttons button {
+  background-color: #3a3a3a;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-buttons button:hover {
+  background-color: #545454;
+}
+
 </style>

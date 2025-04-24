@@ -1,15 +1,8 @@
 <template>
 <div id="home">
 <header class="app-header">
-  <button class="hamburger" @click="isMenuOpen = !isMenuOpen">☰</button>
-  <h1 class="title">Min Side - Avisutgave</h1>
+  <h1 class="title">Min Side</h1>
 </header>
-<nav v-if="isMenuOpen" class="sidebar">
-  <ul>
-    <li @click="showForm = false; isMenuOpen = false">Mine kort</li>
-    <li @click="showForm = true; isMenuOpen = false">Legg til kort</li>
-  </ul>
-</nav>
 <main class="content">
   <CardList v-if="!showForm" @show-form="showForm = true" />
   <CardForm v-else @saved="onSaved" @cancel="showForm = false" />
@@ -38,11 +31,22 @@ function onSaved() {
 }
 
 .app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
   display: flex;
   align-items: center;
   background: #333;
   color: #fff;
   padding: 0.5rem 1rem;
+  z-index: 1000;
+}
+
+.app-header h1 {
+  font-size: 1.3rem;
+  color: #fff;
 }
 
 .hamburger {
@@ -59,8 +63,21 @@ function onSaved() {
 }
 
 .sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  height: calc(100% - 60px);
   background: #f4f4f4;
   padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+.sidebar.open {
+  transform: translateX(0);
 }
 
 .sidebar ul {
@@ -76,6 +93,9 @@ function onSaved() {
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 2rem;
+  margin-top: 60px;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
 }
 </style>

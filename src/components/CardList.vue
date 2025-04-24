@@ -66,7 +66,7 @@
 
 
   <script setup>
-  import { ref, computed, onMounted } from 'vue'
+  import {ref, computed, onMounted, onUnmounted} from 'vue'
   import { getCards, deleteCard as deleteCardService } from '../services/cardService.js'
 
   const confirmDelete = ref(false)
@@ -85,6 +85,21 @@
       console.error('Kunne ikke hente kort:', err)
     }
   }
+
+  function onKeydown(event) {
+    if (event.key === 'Escape' && confirmDelete.value) {
+      confirmDelete.value = false
+    }
+  }
+
+  onMounted(() => {
+    fetchCards()
+    window.addEventListener('keydown', onKeydown)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('keydown', onKeydown)
+  })
 
   function confirmDeleteAndDeleteCard() {
     if (selectedCard.value) {

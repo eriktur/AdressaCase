@@ -56,14 +56,14 @@
     </div>
 
     <div class="form-buttons">
-      <button type="submit">Lagre</button>
+      <button type="submit" :disabled="!isFormValid">Lagre</button>
       <button type="button" @click="$emit('cancel')">Avbryt</button>
     </div>
   </form>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { addCard } from '../services/cardService'
 
 const emit = defineEmits(['saved', 'cancel'])
@@ -80,6 +80,13 @@ const errors = reactive({
   CVV: '',
   issuer: ''
 })
+
+const isFormValid = computed(() => (
+    form.cardDetails && !errors.cardDetails &&
+    form.expiryDate && !errors.expiryDate &&
+    form.CVV && !errors.CVV &&
+    form.issuer && !errors.issuer
+))
 
 function onCardInput() {
   form.cardDetails = form.cardDetails.replace(/\D/g, '').slice(0, 16)
@@ -156,9 +163,7 @@ async function submitForm() {
   validateExpiryDate()
   validateCVV()
   validateIssuer()
-  if (errors.cardDetails || errors.expiryDate || errors.CVV || errors.issuer) {
-    return
-  }
+  if (!isFormValid.value) return
   try {
     await addCard(form)
     emit('saved')
@@ -181,6 +186,9 @@ async function submitForm() {
   flex-direction: column;
   gap: 1.25rem;
   box-sizing: border-box;
+  overflow: visible;
+  max-height: none;
+  height: auto;
 }
 
 .card-form h2 {
@@ -207,7 +215,6 @@ async function submitForm() {
   transition: border-color 0.2s;
 }
 
-
 .card-form input:focus,
 .card-form select:focus {
   border-color: #3a3a3a;
@@ -221,7 +228,6 @@ async function submitForm() {
   justify-content: flex-start;
 }
 
-
 .form-buttons button {
   border: none;
   border-radius: 6px;
@@ -231,13 +237,19 @@ async function submitForm() {
   transition: background-color 0.2s;
 }
 
-
 .form-buttons button[type="submit"] {
   background-color: #208620;
   color: white;
 }
 
-.form-buttons button[type="submit"]:hover {
+.form-buttons button[type="submit"]:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-buttons button[type="submit"]:hover:enabled {
   background-color: #1b6e1b;
 }
 
@@ -251,7 +263,7 @@ async function submitForm() {
 }
 
 .error {
-  color: red;
+  color: #d72121;
   margin-top: 0.25rem;
   font-size: 0.875rem;
 }

@@ -23,11 +23,6 @@ function onSaved() {
 </script>
 
 <style scoped>
-#home {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
 
 .app-header {
   position: fixed;
@@ -55,7 +50,7 @@ function onSaved() {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
-  margin-top: 60px;
+  margin-top: 40px;
   margin-left: 0;
   transition: margin-left 0.3s ease;
 }
